@@ -1,24 +1,25 @@
 const express = require('express');
 const app = express();
 const mongoose = require("mongoose");
-const driverRoute = express.Router();
+const tripsRoute = express.Router();
 
-let Driver = require('../models/Driver');
 
-driverRoute.route('/secure/driver').get((req, res) => {
-    Driver.find((error, data) => {
+let Trips = require('../models/Trips');
+
+
+tripsRoute.route('/secure/trips').get((req, res) => {
+    Trips.find((error, data) => {
         if (error) {
             return next(error)
         } else {
             res.json(data)
         }
     })
-  //  res.send("Hello");
+    //  res.send("Hello");
 });
 
-
-driverRoute.route('/secure/driver').post((req, res, next) => {
-    Driver.create(req.body, (error, data) => {
+tripsRoute.route('/secure/trips').post((req, res, next) => {
+    Trips.create(req.body, (error, data) => {
         if (error) {
             return next(error)
         } else {
@@ -28,4 +29,5 @@ driverRoute.route('/secure/driver').post((req, res, next) => {
     })
 });
 
-module.exports = driverRoute;
+
+module.exports = tripsRoute;

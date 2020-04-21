@@ -1,24 +1,24 @@
 const express = require('express');
 const app = express();
 const mongoose = require("mongoose");
-const driverRoute = express.Router();
+const vehicleRoute = express.Router();
 
-let Driver = require('../models/Driver');
 
-driverRoute.route('/secure/driver').get((req, res) => {
-    Driver.find((error, data) => {
+let Vehicle = require('../models/Vehicle');
+
+vehicleRoute.route('/secure/vehicle').get((req, res) => {
+    Vehicle.find((error, data) => {
         if (error) {
             return next(error)
         } else {
             res.json(data)
         }
     })
-  //  res.send("Hello");
+    //  res.send("Hello");
 });
 
-
-driverRoute.route('/secure/driver').post((req, res, next) => {
-    Driver.create(req.body, (error, data) => {
+vehicleRoute.route('/secure/vehicle').post((req, res, next) => {
+    Vehicle.create(req.body, (error, data) => {
         if (error) {
             return next(error)
         } else {
@@ -28,4 +28,5 @@ driverRoute.route('/secure/driver').post((req, res, next) => {
     })
 });
 
-module.exports = driverRoute;
+
+module.exports = vehicleRoute;

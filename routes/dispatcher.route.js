@@ -1,12 +1,14 @@
 const express = require('express');
 const app = express();
 const mongoose = require("mongoose");
-const userRoute = express.Router();
+const dispatcherRoute = express.Router();
+const multer = require("multer");
 
-let User = require('../models/User');
 
-userRoute.route('/secure/passenger').get((req, res) => {
-    User.find((error, data) => {
+let Dispatcher = require('../models/Dispatcher');
+
+dispatcherRoute.route('/secure/dispatcher').get((req, res) => {
+    Dispatcher.find((error, data) => {
         if (error) {
             return next(error)
         } else {
@@ -16,8 +18,8 @@ userRoute.route('/secure/passenger').get((req, res) => {
     //  res.send("Hello");
 });
 
-userRoute.route('/secure/passenger').post((req, res, next) => {
-    User.create(req.body, (error, data) => {
+dispatcherRoute.route('/secure/dispatcher').post((req, res, next) => {
+    Dispatcher.create(req.body, (error, data) => {
         if (error) {
             return next(error)
         } else {
@@ -28,4 +30,4 @@ userRoute.route('/secure/passenger').post((req, res, next) => {
 });
 
 
-module.exports = userRoute;
+module.exports = dispatcherRoute;

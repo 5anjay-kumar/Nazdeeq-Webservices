@@ -3,10 +3,8 @@ const app = express();
 const mongoose = require("mongoose");
 const adminRoute = express.Router();
 
-// Teacher model
 let Admin = require('../models/Admin');
 
-// Get All Teachers
 adminRoute.route('/secure/admin').get((req, res) => {
     Admin.find((error, data) => {
         if (error) {

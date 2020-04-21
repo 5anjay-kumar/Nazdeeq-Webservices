@@ -1,12 +1,12 @@
 const express = require('express');
 const app = express();
 const mongoose = require("mongoose");
-const userRoute = express.Router();
+const serviceTypeRoute = express.Router();
 
-let User = require('../models/User');
+let ServiceType = require('../models/ServiceType');
 
-userRoute.route('/secure/passenger').get((req, res) => {
-    User.find((error, data) => {
+serviceTypeRoute.route('/secure/servicetype').get((req, res) => {
+    ServiceType.find((error, data) => {
         if (error) {
             return next(error)
         } else {
@@ -16,8 +16,8 @@ userRoute.route('/secure/passenger').get((req, res) => {
     //  res.send("Hello");
 });
 
-userRoute.route('/secure/passenger').post((req, res, next) => {
-    User.create(req.body, (error, data) => {
+serviceTypeRoute.route('/secure/servicetype').post((req, res, next) => {
+    ServiceType.create(req.body, (error, data) => {
         if (error) {
             return next(error)
         } else {
@@ -28,4 +28,4 @@ userRoute.route('/secure/passenger').post((req, res, next) => {
 });
 
 
-module.exports = userRoute;
+module.exports = serviceTypeRoute;
