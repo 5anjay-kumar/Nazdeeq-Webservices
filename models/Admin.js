@@ -9,6 +9,6 @@ var Admin = new Schema({
     password: { type: String, required: true },
     // Nazdeeq: { type: Schema.Types.ObjectId, required: true, ref: 'Nazdeeq' },
     // ServiceType: { type: Schema.Types.ObjectId, required: true, ref: 'ServiceType' }
-}); 
+});
 
 module.exports = mongoose.model("Admin", Admin);

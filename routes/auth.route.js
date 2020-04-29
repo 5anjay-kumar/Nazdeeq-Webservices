@@ -4,24 +4,40 @@ const authRoute = express.Router();
 const jwt = require("jsonwebtoken");
 const config = require("../config.js");
 let Admin = require('../models/Admin');
+let User = require('../models/User');
 
 
 authRoute.route("/login").post((req, res) => {
-    res.send("hello");
-    // let loginAs = req.body.loginAs;
-
-    // if (loginAs == "admin") {
-    //     loginAdmin(req, res);
-    // } 
-    // else if (loginAs == "teacher") {
-    //     loginTeacher(req, res);
-    // } else if (loginAs == "student") {
-    //     loginStudent(req, res);
-    // }
+    let loginAs = req.body.loginAs;
+    console.log(loginAs);
+    if (loginAs == "admin") {
+        loginAdmin(req, res);
+    } 
+    else if (loginAs == "user") {
+        loginUser(req, res);
+    }
 });
 
 function loginAdmin(req, res) {
     Admin.findOne({ email: req.body.email, password: req.body.password }, (error, data) => {
+        console.log("Data", data);
+        console.log("Error", error);
+
+        if (error) {
+            return next(error)
+        } else {
+            if (data) {
+                const token = getToken(data, req.body.loginAs);
+                res.json({
+                    token: token
+                });
+            }
+        }
+    });
+}
+
+function loginUser(req, res) {
+    User.findOne({ email: req.body.email, password: req.body.password }, (error, data) => {
         console.log("Data", data);
         console.log("Error", error);
 

@@ -14,9 +14,7 @@ router.use(bodyParser.json({ extended: true }));
 router.use(cors());
 
 //import all routes
-// const batchRoute = require("./routes/batch.route");
 const authRoute = require("./routes/auth.route");
-const adminRoute = require("./routes/admin.route");
 const dispatcherRoute = require("./routes/dispatcher.route");
 const driverRoute = require("./routes/driver.route");
 const nazdeeqRoute = require("./routes/nazdeeq.route");
@@ -28,15 +26,14 @@ const vehicleRoute = require("./routes/vehicle.route");
 
 // Get all Routes (localhost:3001/api/admin/teacher)
 router.use('/api', authRoute);
-router.use('/api', adminRoute);
-router.use("/api", dispatcherRoute);
-router.use("/api", driverRoute);
-router.use("/api", nazdeeqRoute);
-router.use("/api", serviceTypeRoute);
-router.use("/api", transactionRoute);
-router.use("/api", tripsRoute);
-router.use("/api", userRoute);
-router.use("/api", vehicleRoute);
+router.use("/api", dispatcherRoute, middleware.checkToken);
+router.use("/api", driverRoute, middleware.checkToken);
+router.use("/api", nazdeeqRoute, middleware.checkToken);
+router.use("/api", serviceTypeRoute, middleware.checkToken);
+router.use("/api", transactionRoute, middleware.checkToken);
+router.use("/api", tripsRoute, middleware.checkToken);
+router.use("/api", userRoute, middleware.checkToken);
+router.use("/api", vehicleRoute, middleware.checkToken);
 // router.use('/api', batchRoute, middleware.checkToken);
 
 router.get("*", (req, res) => {
