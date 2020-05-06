@@ -5,6 +5,8 @@ const jwt = require("jsonwebtoken");
 const config = require("../config.js");
 let Admin = require('../models/Admin');
 let User = require('../models/User');
+var nodemailer = require('nodemailer');
+const emailSender = require("../send-email");
 
 
 authRoute.route("/login").post((req, res) => {
@@ -12,17 +14,99 @@ authRoute.route("/login").post((req, res) => {
     console.log(loginAs);
     if (loginAs == "admin") {
         loginAdmin(req, res);
-    } 
+    }
     else if (loginAs == "user") {
         loginUser(req, res);
     }
 });
 
+authRoute.route('/local/signup').post(async (req, res, next) => {
+    var checkEmail = await validateEmailAccessibility(req.body.email);
+    var checkPhoneNo = await validatePhoneNoAccessibility(req.body.phoneNo);
+    if (!checkEmail) {
+        if (!checkPhoneNo) {
+            User.create(req.body, (error, data) => {
+                if (error) {
+                    return next(error)
+                }
+                else {
+                    res.json(data)
+                    console.log(data);
+                }
+            })
+        } else {
+            res.status(400).json({
+                errorMessage: "User already exists with given phone number"
+            });
+        }
+    } else {
+        res.status(400).json({
+            errorMessage: "User already exists with given email address"
+        });
+    }
+});
+
+authRoute.route('/social/signup').post(async (req, res, next) => {
+    var checkEmail = await validateEmailAccessibility(req.body.email);
+    var checkPhoneNo = await validatePhoneNoAccessibility(req.body.phoneNo);
+    if (!checkEmail) {
+        if (!checkPhoneNo) {
+            User.create(req.body, (error, data) => {
+                if (error) {
+                    return next(error)
+                } else {
+                    res.json(data)
+                    console.log(data);
+                    emailSender.sendEmail(req.body.email);
+                }
+            })
+        } else {
+            res.status(400).json({
+                errorMessage: "User already exists with given phone number"
+            });
+        }
+    } else {
+        res.status(400).json({
+            errorMessage: "User already exists with given email address"
+        });
+    }
+});
+
+
+authRoute.route('/social/signin').post(async (req, res, next) => {
+
+    User.findOne({ socialUserId: req.body.socialUserId }, (error, data) => {
+        if (error) {
+            return next(error)
+        } else {
+            if (data) {
+                const token = getToken(data, 'user');
+                res.json({
+                    token: token
+                });
+            } else {
+                res.status(400).json({
+                    errorMessage: "User does not exists, please register your account"
+                });
+            }
+        }
+    });
+});
+
+function validateEmailAccessibility(email) {
+    return User.findOne({ email: email }).then(function (result) {
+        return result !== null;
+    });
+}
+
+function validatePhoneNoAccessibility(phoneNo) {
+    return User.findOne({ phoneNo: phoneNo }).then(function (result) {
+        return result !== null;
+    });
+}
+
 function loginAdmin(req, res) {
     Admin.findOne({ email: req.body.email, password: req.body.password }, (error, data) => {
-        console.log("Data", data);
-        console.log("Error", error);
-
         if (error) {
             return next(error)
         } else {
@@ -31,6 +115,10 @@ function loginAdmin(req, res) {
                 res.json({
                     token: token
                 });
+            } else {
+                res.status(400).json({
+                    errorMessage: "Invalid email or password"
+                });
             }
         }
     });
@@ -38,9 +126,6 @@ function loginAdmin(req, res) {
 
 function loginUser(req, res) {
     User.findOne({ email: req.body.email, password: req.body.password }, (error, data) => {
-        console.log("Data", data);
-        console.log("Error", error);
-
         if (error) {
             return next(error)
         } else {
@@ -48,6 +133,10 @@ function loginUser(req, res) {
                 const token = getToken(data, req.body.loginAs);
                 res.json({
                     token: token
+                });
+            } else {
+                res.status(400).json({
+                    errorMessage: "Invalid email or password"
                 });
             }
         }
@@ -72,12 +161,32 @@ function getToken(data, role) {
     );
 
     return token;
-    // return the JWT token for the future API calls
-    /*
-    res.send(400).json({
-        success: false,
-        message: 'Authentication failed! Please check the request'
-    });*/
 }
+
+// var transporter = nodemailer.createTransport({
+//     service: 'gmail',
+//     auth: {
+//         user: '160553@students.au.edu.pk',
+//         pass: '160553@Students'
+//     }
+// });
+
+// const mailOptions = {
+//     from: '160553@students.au.edu.pk', // sender address
+//     to: '',
+//     subject: 'Subject of your email', // Subject line
+//     html: '<p>Your html here</p>'// plain text body
+// };
+
+
+// function sendEmail(toEmail) {
+//     mailOptions.to = toEmail;
+//     transporter.sendMail(mailOptions, function (err, info) {
+//         if (err)
+//             console.log(err)
+//         else
+//             console.log(info);
+//     });
+// }
 
 module.exports = authRoute;

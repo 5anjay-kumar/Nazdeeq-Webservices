@@ -4,7 +4,12 @@ const express = require("express"),
     cors = require('cors'),
     bodyParser = require("body-parser"),
     router = express(),
-    middleware = require("./middleware");
+    middleware = require("./middleware"),
+    fs = require("fs"),
+    https = require("https");
+privateKey = fs.readFileSync("./ssl/server.key"),
+    certificate = fs.readFileSync("./ssl/server.cert"),
+    credentials = { key: privateKey, cert: certificate };
 
 // mongoose.connect("mongodb://localhost:27017/nazdeeq", { useUnifiedTopology: true, useNewUrlParser: true });
 mongoose.connect("mongodb+srv://admin:admin@nazdeeq-e00tr.mongodb.net/test?retryWrites=true&w=majority", { useUnifiedTopology: true, useNewUrlParser: true });
@@ -15,6 +20,7 @@ router.use(cors());
 
 //import all routes
 const authRoute = require("./routes/auth.route");
+const socialRoute = require("./routes/social.route");
 const dispatcherRoute = require("./routes/dispatcher.route");
 const driverRoute = require("./routes/driver.route");
 const nazdeeqRoute = require("./routes/nazdeeq.route");
@@ -26,21 +32,24 @@ const vehicleRoute = require("./routes/vehicle.route");
 
 // Get all Routes (localhost:3001/api/admin/teacher)
 router.use('/api', authRoute);
+router.use('/api', socialRoute);
 router.use("/api", dispatcherRoute, middleware.checkToken);
 router.use("/api", driverRoute, middleware.checkToken);
 router.use("/api", nazdeeqRoute, middleware.checkToken);
 router.use("/api", serviceTypeRoute, middleware.checkToken);
 router.use("/api", transactionRoute, middleware.checkToken);
 router.use("/api", tripsRoute, middleware.checkToken);
-router.use("/api", userRoute, middleware.checkToken);
+router.use("/api", userRoute);
 router.use("/api", vehicleRoute, middleware.checkToken);
 // router.use('/api', batchRoute, middleware.checkToken);
+
 
 router.get("*", (req, res) => {
     res.send("Error 404 not found! ");
 });
 
+var httpsServer = https.createServer(credentials, router);
 
-router.listen(port, () => {
+httpsServer.listen(port, () => {
     console.log("Running...");
 });

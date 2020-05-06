@@ -16,11 +16,12 @@ userRoute.route('/secure/passenger').get((req, res) => {
     //  res.send("Hello");
 });
 
-userRoute.route('/secure/passenger').post((req, res, next) => {
+userRoute.route('/local/signup').post((req, res, next) => {
     User.create(req.body, (error, data) => {
         if (error) {
             return next(error)
-        } else {
+        } 
+        else {
             res.json(data)
             console.log(data);
         }
