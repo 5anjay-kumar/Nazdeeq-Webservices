@@ -28,5 +28,34 @@ vehicleRoute.route('/secure/vehicle').post((req, res, next) => {
     })
 });
 
+vehicleRoute.route('/secure/vehicle/:id').get((req, res) => {
+    Vehicle.findById(req.params.id, (error, data) => {
+        if (error) {
+            return next(error)
+        } else {
+            res.json(data)
+        }
+    }).populate({ path: 'Driver' })
+        .exec(function (err, data) {
+        });
+});
+
+vehicleRoute.route('/secure/vehicle/driver/:driverId').get((req, res) => {
+
+    Vehicle.findOne({ Driver: mongoose.Types.ObjectId(req.params.driverId) }, (error, data) => {
+        if (error) {
+            return next(error)
+        } else {
+            res.json(data)
+        }
+    })
+        .populate({
+            path: "Driver", populate: {
+                path: "User",
+                model: "User"
+            }
+        }).exec(function (err, docs) {
+        });
+});
 
 module.exports = vehicleRoute;

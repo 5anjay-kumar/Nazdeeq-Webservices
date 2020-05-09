@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const driverRoute = express.Router();
 
 let Driver = require('../models/Driver');
+let Vehicle = require('../models/Vehicle');
 
 driverRoute.route('/secure/driver').get((req, res) => {
     Driver.find((error, data) => {
@@ -13,7 +14,7 @@ driverRoute.route('/secure/driver').get((req, res) => {
             res.json(data)
         }
     })
-  //  res.send("Hello");
+    //  res.send("Hello");
 });
 
 
@@ -27,5 +28,18 @@ driverRoute.route('/secure/driver').post((req, res, next) => {
         }
     })
 });
+
+driverRoute.route('/secure/driver/:id').get((req, res) => {
+    Driver.findById(req.params.id, (error, data) => {
+        if (error) {
+            return next(error)
+        } else {
+            res.json(data)
+        }
+    }).populate({ path: 'User' })
+        .exec(function (err, data) {
+        });
+});
+
 
 module.exports = driverRoute;

@@ -3,7 +3,7 @@ const config = require("./config.js");
 
 let checkToken = (req, res, next) => {
     let token = req.headers["x-auth-token"] || req.headers["authorization"];
-    console.log(req.decoded);
+    // console.log(req.decoded);
 
     if (token) {
         if (token.startsWith("Bearer")) {

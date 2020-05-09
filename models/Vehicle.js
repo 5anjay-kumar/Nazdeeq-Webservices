@@ -6,7 +6,7 @@ var Vehicle = new Schema({
     vehicleType: { type: String, required: true },
     vehicleNumber: { type: String, required: true },
     numberOfSeats: { type: String, required: true },
-    isDocumentVerifyed: { type: Boolean, required: true },
+    isDocumentVerifyed: { type: Boolean, required: false },
     Driver: { type: Schema.Types.ObjectId, required: true, ref: 'Driver' }
 });
 

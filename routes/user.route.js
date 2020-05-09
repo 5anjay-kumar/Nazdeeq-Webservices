@@ -23,11 +23,21 @@ userRoute.route('/local/signup').post((req, res, next) => {
         } 
         else {
             res.json(data)
-            console.log(data);
+            // console.log(data);
         }
     })
 });
 
+// Get single Subject
+// studentRoute.route('/read/:id').get((req, res) => {
+//     Subject.findById(req.params.id, (error, data) => {
+//     if (error) {
+//       return next(error)
+//     } else {
+//       res.json(data)
+//     }
+//   })
+// })
 
 
 module.exports = userRoute;
