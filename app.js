@@ -9,6 +9,7 @@ const express = require("express"),
     https = require("https");
 privateKey = fs.readFileSync("./ssl/server.key"),
     certificate = fs.readFileSync("./ssl/server.cert"),
+    emailSender = require("./send-email"),
     credentials = { key: privateKey, cert: certificate };
 
 // mongoose.connect("mongodb://localhost:27017/nazdeeq", { useUnifiedTopology: true, useNewUrlParser: true });
@@ -30,6 +31,8 @@ const tripsRoute = require("./routes/trips.route");
 const userRoute = require("./routes/user.route");
 const vehicleRoute = require("./routes/vehicle.route");
 
+
+
 // Get all Routes (localhost:3001/api/admin/teacher)
 router.use('/api', authRoute);
 router.use('/api', socialRoute);
@@ -49,6 +52,8 @@ router.get("*", (req, res) => {
 });
 
 var httpsServer = https.createServer(credentials, router);
+
+
 
 httpsServer.listen(port, () => {
     console.log("Running...");

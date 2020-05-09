@@ -1,31 +1,32 @@
 const nodemailer = require('nodemailer');
-var smtpTransport = require('nodemailer-smtp-transport');
-var handlebars = require('handlebars');
-var fs = require('fs');
-
-const senderEmail = '160553@students.au.edu.pk';
+const config = require("./config.js");
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: senderEmail,
-    pass: '160553@Students' // naturally, replace both with your real credentials or an application-specific password
+    user: config.user,
+    pass: config.pass
   }
 });
 
+
 const mailOptions = {
-  from: senderEmail,
+  from: config.user,
   to: '',
-  subject: 'Welcome to Nazdeeq',
-  text: 'Thank you for joining us!'
+  subject: 'Welcome to Nazdeeq!',
+  html: ''
 };
 
-module.exports.sendEmail = function (toEmail) {
+
+module.exports.sendEmail = function (toEmail, firstName) {
+  htmlCode = "<a href='https://ibb.co/BnYvM32'><img src='https://i.ibb.co/BnYvM32/logo.png' alt='logo' border='0'></a>  <p>Dear " + firstName + ",</p> <p> Welcome to the Nazdeeq family! </p> "
+  
   mailOptions.to = toEmail;
+  mailOptions.html = htmlCode;
   transporter.sendMail(mailOptions, function (err, info) {
-      if (err)
-          console.log(err)
-      else
-          console.log(info);
+    if (err)
+      console.log(err)
+    else
+      console.log(info);
   });
 }

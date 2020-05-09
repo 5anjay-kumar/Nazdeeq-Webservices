@@ -57,7 +57,7 @@ authRoute.route('/social/signup').post(async (req, res, next) => {
                 } else {
                     res.json(data)
                     console.log(data);
-                    emailSender.sendEmail(req.body.email);
+                    emailSender.sendEmail(req.body.email, req.body.firstName);
                 }
             })
         } else {
