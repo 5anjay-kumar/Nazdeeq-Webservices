@@ -29,5 +29,19 @@ dispatcherRoute.route('/secure/dispatcher').post((req, res, next) => {
     })
 });
 
+// Update Dispatcher 
+dispatcherRoute.route('/secure/dispatcher/:id').put((req, res, next) => {
+    Dispatcher.findByIdAndUpdate(req.params.id, {
+    $set: req.body
+  }, (error, data) => {
+    if (error) {
+      return next(error);
+    } else {
+      res.json(data)
+      console.log('Data updated successfully')
+    }
+  })
+})
+
 
 module.exports = dispatcherRoute;

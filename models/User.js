@@ -12,7 +12,6 @@ var User = new Schema({
     status: { type: Boolean, required: true },
     socialUserId: {type: String, required: false},
     socialProvider: {type: String, required: false}
-    // imgFile: { imageName: String }
 });
 
 module.exports = mongoose.model("User", User);

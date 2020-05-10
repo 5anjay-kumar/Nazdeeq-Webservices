@@ -30,6 +30,7 @@ const transactionRoute = require("./routes/transaction.route");
 const tripsRoute = require("./routes/trips.route");
 const userRoute = require("./routes/user.route");
 const vehicleRoute = require("./routes/vehicle.route");
+const rateAndReviewRoute = require("./routes/rateAndReview.route");
 
 
 
@@ -44,6 +45,7 @@ router.use("/api", transactionRoute, middleware.checkToken);
 router.use("/api", tripsRoute, middleware.checkToken);
 router.use("/api", userRoute);
 router.use("/api", vehicleRoute, middleware.checkToken);
+router.use("/api", rateAndReviewRoute, middleware.checkToken);
 // router.use('/api', batchRoute, middleware.checkToken);
 
 
