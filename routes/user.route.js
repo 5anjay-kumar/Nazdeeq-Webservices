@@ -28,6 +28,20 @@ userRoute.route('/local/signup').post((req, res, next) => {
     })
 });
 
+// Update Passenger 
+userRoute.route('/secure/passenger/:id').put((req, res, next) => {
+    User.findByIdAndUpdate(req.params.id, {
+    $set: req.body
+  }, (error, data) => {
+    if (error) {
+      return next(error);
+    } else {
+      res.json(data)
+    //   console.log('Data updated successfully')
+    }
+  })
+})
+
 // Get single Subject
 // studentRoute.route('/read/:id').get((req, res) => {
 //     Subject.findById(req.params.id, (error, data) => {

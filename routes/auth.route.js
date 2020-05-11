@@ -93,6 +93,26 @@ authRoute.route('/social/signin').post(async (req, res, next) => {
     });
 });
 
+authRoute.route('/signup').post(async (req, res, next) => {
+
+    User.findOne({ socialUserId: req.body.socialUserId }, (error, data) => {
+        if (error) {
+            return next(error)
+        } else {
+            if (data) {
+                const token = getToken(data, 'user');
+                res.json({
+                    token: token
+                });
+            } else {
+                res.status(400).json({
+                    errorMessage: "User does not exists, please register your account"
+                });
+            }
+        }
+    });
+});
+
 function validateEmailAccessibility(email) {
     return User.findOne({ email: email }).then(function (result) {
         return result !== null;
@@ -162,31 +182,5 @@ function getToken(data, role) {
 
     return token;
 }
-
-// var transporter = nodemailer.createTransport({
-//     service: 'gmail',
-//     auth: {
-//         user: '160553@students.au.edu.pk',
-//         pass: '160553@Students'
-//     }
-// });
-
-// const mailOptions = {
-//     from: '160553@students.au.edu.pk', // sender address
-//     to: '',
-//     subject: 'Subject of your email', // Subject line
-//     html: '<p>Your html here</p>'// plain text body
-// };
-
-
-// function sendEmail(toEmail) {
-//     mailOptions.to = toEmail;
-//     transporter.sendMail(mailOptions, function (err, info) {
-//         if (err)
-//             console.log(err)
-//         else
-//             console.log(info);
-//     });
-// }
 
 module.exports = authRoute;

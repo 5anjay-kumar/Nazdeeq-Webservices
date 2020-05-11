@@ -41,5 +41,19 @@ driverRoute.route('/secure/driver/:id').get((req, res) => {
         });
 });
 
+// Update Driver 
+driverRoute.route('/secure/driver/:id').put((req, res, next) => {
+    Driver.findByIdAndUpdate(req.params.id, {
+    $set: req.body
+  }, (error, data) => {
+    if (error) {
+      return next(error);
+    } else {
+      res.json(data)
+    //   console.log('Data updated successfully')
+    }
+  })
+})
+
 
 module.exports = driverRoute;

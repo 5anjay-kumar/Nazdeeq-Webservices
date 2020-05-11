@@ -38,7 +38,7 @@ dispatcherRoute.route('/secure/dispatcher/:id').put((req, res, next) => {
       return next(error);
     } else {
       res.json(data)
-      console.log('Data updated successfully')
+    //   console.log('Data updated successfully')
     }
   })
 })
