@@ -16,11 +16,30 @@ userRoute.route('/secure/passenger').get((req, res) => {
     //  res.send("Hello");
 });
 
+userRoute.route('/secure/user/count').get((req, res, next) => {
+    User.aggregate([
+        {
+            $group: {
+                _id: 1,
+                count: {
+                    $sum: 1
+                }
+            }
+        }
+    ], (error, data) => {
+        if (error) {
+            return next(error)
+        } else {
+            res.json(data)
+        }
+    });
+})
+
 userRoute.route('/local/signup').post((req, res, next) => {
     User.create(req.body, (error, data) => {
         if (error) {
             return next(error)
-        } 
+        }
         else {
             res.json(data)
             // console.log(data);
@@ -31,15 +50,15 @@ userRoute.route('/local/signup').post((req, res, next) => {
 // Update Passenger 
 userRoute.route('/secure/passenger/:id').put((req, res, next) => {
     User.findByIdAndUpdate(req.params.id, {
-    $set: req.body
-  }, (error, data) => {
-    if (error) {
-      return next(error);
-    } else {
-      res.json(data)
-    //   console.log('Data updated successfully')
-    }
-  })
+        $set: req.body
+    }, (error, data) => {
+        if (error) {
+            return next(error);
+        } else {
+            res.json(data)
+            //   console.log('Data updated successfully')
+        }
+    })
 })
 
 // Get single Subject

@@ -17,6 +17,26 @@ vehicleRoute.route('/secure/vehicle').get((req, res) => {
     //  res.send("Hello");
 });
 
+
+vehicleRoute.route('/secure/vehicle/count').get((req, res, next) => {
+    Vehicle.aggregate([
+        {
+            $group: {
+                _id: 1,
+                count: {
+                    $sum: 1
+                }
+            }
+        }
+    ], (error, data) => {
+        if (error) {
+            return next(error)
+        } else {
+            res.json(data)
+        }
+    });
+})
+
 vehicleRoute.route('/secure/vehicle').post((req, res, next) => {
     Vehicle.create(req.body, (error, data) => {
         if (error) {

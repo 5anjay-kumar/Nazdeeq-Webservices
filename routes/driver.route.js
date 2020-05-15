@@ -29,7 +29,46 @@ driverRoute.route('/secure/driver').post((req, res, next) => {
     })
 });
 
-driverRoute.route('/secure/driver/:id').get((req, res) => {
+driverRoute.route('/secure/driver/count').get((req, res, next) => {
+    Driver.aggregate([
+        {
+            $group: {
+                _id: 1,
+                count: {
+                    $sum: 1
+                }
+            }
+        }
+    ], (error, data) => {
+        if (error) {
+            return next(error)
+        } else {
+            res.json(data)
+        }
+    });
+})
+
+driverRoute.route('/secure/driver/bystatus').get((req, res, next) => {
+    Driver.aggregate([
+        {
+            $group: {
+                _id: '$status',
+                count: {
+                    $sum: 1
+                }
+            },
+        },
+        { "$sort": { "_id": -1 } }
+    ], (error, data) => {
+        if (error) {
+            return next(error)
+        } else {
+            res.json(data)
+        }
+    });
+})
+
+driverRoute.route('/secure/driver/:id').get((req, res, next) => {
     Driver.findById(req.params.id, (error, data) => {
         if (error) {
             return next(error)
@@ -44,16 +83,18 @@ driverRoute.route('/secure/driver/:id').get((req, res) => {
 // Update Driver 
 driverRoute.route('/secure/driver/:id').put((req, res, next) => {
     Driver.findByIdAndUpdate(req.params.id, {
-    $set: req.body
-  }, (error, data) => {
-    if (error) {
-      return next(error);
-    } else {
-      res.json(data)
-    //   console.log('Data updated successfully')
-    }
-  })
+        $set: req.body
+    }, (error, data) => {
+        if (error) {
+            return next(error);
+        } else {
+            res.json(data)
+            //   console.log('Data updated successfully')
+        }
+    })
 })
+
+
 
 
 module.exports = driverRoute;
