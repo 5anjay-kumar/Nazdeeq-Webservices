@@ -68,6 +68,29 @@ driverRoute.route('/secure/driver/bystatus').get((req, res, next) => {
     });
 })
 
+driverRoute.route('/secure/driver/bymonth').get((req, res, next) => {
+    Driver.aggregate([
+        {
+            $group: {
+                _id: {
+                    month: { $month: "$dateOfJoin" },
+                },
+                count: {
+                    $sum: 1
+                }
+            }
+        },
+        { "$sort": { "_id": -1 } }
+    ],
+        (error, data) => {
+            if (error) {
+                return next(error)
+            } else {
+                res.json(data)
+            }
+        });
+});
+
 driverRoute.route('/secure/driver/:id').get((req, res, next) => {
     Driver.findById(req.params.id, (error, data) => {
         if (error) {

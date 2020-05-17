@@ -25,7 +25,8 @@ userRoute.route('/secure/user/count').get((req, res, next) => {
                     $sum: 1
                 }
             }
-        }
+        },
+        
     ], (error, data) => {
         if (error) {
             return next(error)
@@ -34,6 +35,32 @@ userRoute.route('/secure/user/count').get((req, res, next) => {
         }
     });
 })
+
+
+userRoute.route('/secure/user/bymonth').get((req, res, next) => {
+    User.aggregate([
+        {
+            $group: {
+                _id: {
+                    month: { $month: "$dateOfJoin" },
+                },
+                count: {
+                    $sum: 1
+                }
+            }
+        },
+        { "$sort": { "_id": -1 } }
+    ],
+        (error, data) => {
+            if (error) {
+                return next(error)
+            } else {
+                res.json(data)
+            }
+        });
+});
+
+
 
 userRoute.route('/local/signup').post((req, res, next) => {
     User.create(req.body, (error, data) => {
@@ -72,5 +99,21 @@ userRoute.route('/secure/passenger/:id').put((req, res, next) => {
 //   })
 // })
 
+
+function getCurrentDate(atDayStart) {
+    let ts = Date.now();
+    let date_ob = new Date(ts);
+    let date = date_ob.getDate();
+    let month = date_ob.getMonth() + 1;
+    let year = date_ob.getFullYear();
+    let currentDate = year + "-" + month + "-" + date;
+    if (atDayStart) {
+        currentDate += " 00:00:00"
+    } else {
+        currentDate += " 23:59:59"
+    }
+
+    return currentDate;
+}
 
 module.exports = userRoute;

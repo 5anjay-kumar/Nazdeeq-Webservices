@@ -8,7 +8,7 @@ var User = new Schema({
     phoneNo: { type: String, required: true },
     password: { type: String, required: false },
     gender: { type: Boolean, required: true },
-    dateOfJoin: { type: String, required: true },
+    dateOfJoin: { type: Date, required: true },
     status: { type: Boolean, required: true },
     socialUserId: {type: String, required: false},
     socialProvider: {type: String, required: false}

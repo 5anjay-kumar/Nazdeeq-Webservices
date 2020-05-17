@@ -18,6 +18,26 @@ transactionRoute.route('/secure/transaction').get((req, res) => {
     //  res.send("Hello");
 });
 
+transactionRoute.route('/secure/transaction/paidamount').get((req, res, next) => {
+    Transaction.aggregate([
+        {
+            $group: {
+                _id: null,
+                totalAmount: {
+                    $sum: "$paidAmount"
+                }
+            }
+        },
+    ],
+        (error, data) => {
+            if (error) {
+                return next(error)
+            } else {
+                res.json(data)
+            }
+        });
+});
+
 transactionRoute.route('/secure/transaction').post((req, res, next) => {
     Transaction.create(req.body, (error, data) => {
         if (error) {
