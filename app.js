@@ -1,19 +1,22 @@
 const express = require("express"),
     port = process.env.PORT || 3001,
     mongoose = require("mongoose"),
-    cors = require('cors'),
+    cors = require("cors"),
     bodyParser = require("body-parser"),
     router = express(),
     middleware = require("./middleware"),
     fs = require("fs"),
+    path = require("path"),
     https = require("https");
-    privateKey = fs.readFileSync("./ssl/server.key"),
-    certificate = fs.readFileSync("./ssl/server.cert"),
-    emailSender = require("./send-email"),
-    credentials = { key: privateKey, cert: certificate };
+(privateKey = fs.readFileSync("./ssl/server.key")),
+(certificate = fs.readFileSync("./ssl/server.cert")),
+(emailSender = require("./send-email")),
+(credentials = { key: privateKey, cert: certificate });
 
 // mongoose.connect("mongodb://localhost:27017/nazdeeq", { useUnifiedTopology: true, useNewUrlParser: true });
-mongoose.connect("mongodb+srv://admin:admin@nazdeeq-e00tr.mongodb.net/test?retryWrites=true&w=majority", { useUnifiedTopology: true, useNewUrlParser: true });
+mongoose.connect(
+    "mongodb+srv://admin:admin@nazdeeq-e00tr.mongodb.net/test?retryWrites=true&w=majority", { useUnifiedTopology: true, useNewUrlParser: true }
+);
 
 router.use(bodyParser.json({ extended: true }));
 
@@ -32,11 +35,12 @@ const userRoute = require("./routes/user.route");
 const vehicleRoute = require("./routes/vehicle.route");
 const rateAndReviewRoute = require("./routes/rateAndReview.route");
 
-
-
+router.use(
+    express.static(path.join(__dirname, "../Nazdeeq-Project/dist/nazdeeq"))
+);
 // Get all Routes (localhost:3001/api/admin/teacher)
-router.use('/api', authRoute);
-router.use('/api', socialRoute);
+router.use("/api", authRoute);
+router.use("/api", socialRoute);
 router.use("/api", dispatcherRoute, middleware.checkToken);
 router.use("/api", driverRoute, middleware.checkToken);
 router.use("/api", nazdeeqRoute, middleware.checkToken);
@@ -46,16 +50,17 @@ router.use("/api", tripsRoute, middleware.checkToken);
 router.use("/api", userRoute);
 router.use("/api", vehicleRoute, middleware.checkToken);
 router.use("/api", rateAndReviewRoute, middleware.checkToken);
+
 // router.use('/api', batchRoute, middleware.checkToken);
 
-
 router.get("*", (req, res) => {
-    res.send("Error 404 not found! ");
+    //   res.send("Error 404 not found! ");
+    return res.sendFile(
+        path.join(__dirname, "../Nazdeeq-Project/dist/nazdeeq/index.html")
+    );
 });
 
 var httpsServer = https.createServer(credentials, router);
-
-
 
 httpsServer.listen(port, () => {
     console.log("Running...");
