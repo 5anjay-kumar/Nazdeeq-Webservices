@@ -34,6 +34,9 @@ const userRoute = require("./routes/user.route");
 const vehicleRoute = require("./routes/vehicle.route");
 const rateAndReviewRoute = require("./routes/rateAndReview.route");
 
+router.use(
+    express.static(path.join(__dirname, "../Nazdeeq-Project/dist/nazdeeq"))
+);
 // Get all Routes (localhost:3001/api/admin/teacher)
 router.use("/api", authRoute);
 router.use("/api", socialRoute);
@@ -49,7 +52,11 @@ router.use("/api", rateAndReviewRoute, middleware.checkToken);
 // router.use('/api', batchRoute, middleware.checkToken);
 
 router.get("*", (req, res) => {
-    res.send("Error 404 not found! ");
+    //   res.send("Error 404 not found! ");
+    return res.sendFile(
+        path.join(__dirname, "../Nazdeeq-Project/dist/nazdeeq/index.html")
+    );
+    // res.send("Error 404 not found! ");
 });
 
 // var httpsServer = https.createServer(credentials, router);
