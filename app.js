@@ -7,11 +7,11 @@ const express = require("express"),
     middleware = require("./middleware"),
     fs = require("fs"),
     path = require("path"),
-    // https = require("https");
-    // privateKey = fs.readFileSync("./ssl/server.key"),
-    // certificate = fs.readFileSync("./ssl/server.cert"),
-    emailSender = require("./send-email");
-// credentials = { key: privateKey, cert: certificate };
+    https = require("https");
+(privateKey = fs.readFileSync("./ssl/server.key")),
+(certificate = fs.readFileSync("./ssl/server.cert")),
+(emailSender = require("./send-email"));
+credentials = { key: privateKey, cert: certificate };
 
 // mongoose.connect("mongodb://localhost:27017/nazdeeq", { useUnifiedTopology: true, useNewUrlParser: true });
 mongoose.connect(
@@ -60,8 +60,8 @@ router.get("*", (req, res) => {
     // res.send("Error 404 not found! ");
 });
 
-// var httpsServer = https.createServer(credentials, router);
-// var httpsServer = https.createServer(router);
-router.listen(port, () => {
+var httpsServer = https.createServer(credentials, router);
+var httpsServer = https.createServer(router);
+httpsServer.listen(port, () => {
     console.log("Running...");
 });
